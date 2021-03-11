@@ -132,6 +132,23 @@ end
 
 ############################################################
 
+
+def get_btc_price
+  result_string = HTTParty.get("https://api.coindesk.com/v1/bpi/currentprice.json")
+  result = JSON.parse(result_string) # api sent back a string so need to convert to json
+  price = result['bpi']['USD']['rate_float'].round(2)
+  return price
+end
+
+# def get_cash_balance(user_id)
+
+# end
+
+# def purchase_exceeds_balance(cost)
+#   if cost >= cash_balance
+# end
+
+
 get '/' do
   # get the balances to display for the session user or zero balance if not logged in
   cash_balance = 0
@@ -146,20 +163,23 @@ get '/' do
     end
   end
 
-  erb :index, locals: { cash_balance: cash_balance, bitcoin_balance: bitcoin_balance }
+  combined_value = cash_balance + (bitcoin_balance * get_btc_price())
+
+  erb :index, locals: { cash_balance: cash_balance, bitcoin_balance: bitcoin_balance, combined_value: combined_value }
 end
 
 
 post '/trade' do
   redirect '/login' unless logged_in? # send to login if not logged in.
-
-  result_string = HTTParty.get("https://api.coindesk.com/v1/bpi/currentprice.json")
-  result = JSON.parse(result_string) # api sent back a string so need to convert to json
-  price = result['bpi']['USD']['rate_float'].round(2)
+  
+  price = get_btc_price()
 
   # convert the trade_cost to -ve if it's not a purchase.
   if params[:purchase]
     trade_cost = params[:trade_amount].to_f.round(2)
+    # if purchase_exceeds_balance(trade_cost)
+    #   redirect '/'
+    # end
   else
     trade_cost = -(params[:trade_amount].to_f.round(2))   
   end
