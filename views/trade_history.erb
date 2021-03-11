@@ -1,0 +1,9 @@
+<h2>Trade History</h2>
+
+<ul>
+    <% history.each do |trade| %>
+        <li>
+            Trade amount: $ <%= trade['trade_size'] %> Price: $ <%= trade['price'] %> No. of BTC: <%= trade['no_of_coins'] %>
+        </li>
+    <%end%>
+</ul>

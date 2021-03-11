@@ -1,0 +1,19 @@
+<h2>Edit User Account</h2>
+
+<form action="/users/<%=user['id']%>" method="post">
+    <input type="hidden" name="_method" value="patch">
+
+    <label for="">First name:</label>
+    <input type="text" name="first_name">
+
+    <label for="">Last name: </label>
+    <input type="text" name="last_name">
+
+    <%# <label for="">Email: </label>
+    <input type="text" name="email">
+
+    <label for="">Password: </label>
+    <input type="text" name="password"> %>
+
+    <button>Save Edit</button>
+</form>

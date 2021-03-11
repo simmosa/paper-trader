@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Paper Trader</title>
+  <link rel='stylesheet' href='/stylesheets/main.css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+  <section class="container_section">
+
+  <header>
+    <h1 class="page_title_h1"><em>Paper Trader</em></h1>
+  </header>
+
+  <div class="ticker_tape_widget_div">
+    <!-- TradingView Widget BEGIN -->
+    <div class="tradingview-widget-container">
+      <div class="tradingview-widget-container__widget"></div>
+      <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com" rel="noopener" target="_blank"><span class="blue-text">Ticker Tape</span></a> by TradingView</div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+      "symbols": [
+        {
+          "description": "BTC/AUD",
+          "proName": "BINANCE:BTCAUD"
+        },
+        {
+          "description": "AUD/USD",
+          "proName": "FX:AUDUSD"
+        },
+        {
+          "description": "ASX200",
+          "proName": "ASX:YQRE"
+        },
+        {
+          "description": "EUR/USD",
+          "proName": "FX:EURUSD"
+        },
+        {
+          "description": "ETH/AUD",
+          "proName": "BINANCE:ETHAUD"
+        }
+      ],
+      "showSymbolLogo": true,
+      "colorTheme": "dark",
+      "isTransparent": false,
+      "displayMode": "adaptive",
+      "locale": "en"
+    }
+      </script>
+    </div>
+    <!-- TradingView Widget END -->
+  </div>
+
+  <nav>
+    <a href="/">Home</a>
+    <a href="/trade_history">Trade History</a>
+
+    <div>
+      <% if logged_in? %>
+      <%# <% if session[:user_id] %>
+        <%= current_user['email']%> <!-- note: current_user method returns an object.-->
+
+        <form action="/users/<%=current_user['id']%>" method="get" class="nav_form">
+
+          <button class="nav_btn">Profile</button>
+        </form>
+
+        <form action="/sessions" method="post" class="nav_form">
+          <input type="hidden" name="_method" value="delete">
+
+          <button class="nav_btn">logout</button>
+        </form>
+
+      <% else %>
+        <a href="/login">login</a>
+        <a href="/users/new">sign up</a>
+    <% end %>
+  </div>
+  </nav>
+  
+  <div class="yield_div">
+    <%= yield %>
+  </div>
+
+</section>
+</body>
+</html>

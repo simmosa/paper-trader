@@ -1,0 +1,36 @@
+
+/* .container_section {
+    margin: auto;
+    width: 80%;
+} */
+
+.yield_div {
+    margin: auto;
+    width: 80%;
+}
+
+nav {
+    border-bottom: 1px solid black;
+}
+nav a, nav div, .nav_btn, .nav_form {
+    display: inline;
+}
+
+.page_title_h1 {
+    text-align: center;
+    font-size: 300%;
+    margin: 0;
+}
+
+.chart_widget_div {
+    margin-top: 1%
+}
+
+/* .tradingview-widget-container {
+    height: 300px;
+
+} */
+
+.blue-text {
+    font-size: 90%
+}

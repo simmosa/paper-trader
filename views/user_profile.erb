@@ -1,0 +1,25 @@
+<h2>Profile</h2>
+
+<ul>
+    <li>First name: <%=user['first_name']%></li>
+    <li>Last name: <%=user['last_name']%></li>
+    <li>Email: <%=user['email']%></li>
+</ul>
+
+
+<%# <a href="/users/<%=user['id']/edit">Edit Profile</a> %>
+<form action="/users/<%=user['id']%>/edit" method="get">
+    <%# <input type="hidden" name="" value="delete"> %>
+
+    <button>Edit Profile</button>
+</form>
+
+<form action="/users/<%=user['id']%>" method="post">
+    <input type="hidden" name="_method" value="delete">
+
+    <button>Delete Profile</button>
+</form>
+
+<form action="">
+
+</form>
