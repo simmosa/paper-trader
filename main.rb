@@ -1,4 +1,3 @@
-
 require 'sinatra'
 require 'httparty'
 require 'bcrypt'
