@@ -19,32 +19,11 @@ def logged_in?
   end
 end
 
-# def run_sql(sql, arr = []) 
-#   db = PG.connect(dbname: 'trading_floor')
-#   results = db.exec_params(sql, arr) 
-#   db.close
-#   return results
-# end
-
 def current_user
   results = run_sql("SELECT * FROM users WHERE id = $1;", [session[:user_id]])
-  # db = PG.connect(dbname: 'trading_floor')
-  # sql = "SELECT * FROM users WHERE id = #{session[:user_id]};"
-  # results = db.exec(sql)
-  # db.close
+
   return results.first
 end
-
-def record_trade(price, no_of_coins, trade_size)
-  run_sql("INSERT INTO trades (price, no_of_coins, trade_size, user_id) VALUES ($1, $2, $3, $4);", [price, no_of_coins, trade_size, session[:user_id]])
-
-  # db = PG.connect(dbname: 'trading_floor')
-  # sql = "INSERT INTO trades (price, no_of_coins, trade_size, user_id) VALUES (#{price}, #{no_of_coins}, #{trade_size}, #{session[:user_id]});"
-  # db.exec(sql)
-  # db.close
-end
-
-
 
 get '/login' do
 
@@ -82,20 +61,19 @@ post '/users' do
 
   user_id = run_sql("INSERT INTO users (first_name, last_name, email, password_digest) VALUES ($1,$2,$3,$4) RETURNING id",[ params[:first_name], params[:last_name], params[:email], password_digest ])
 
+  #set session id
+  session[:user_id] = user_id[0]['id']
+
+  # create a starting balance of $10000 in the trades table
+  # record_trade(0, 0, 10000) 
 
   # set the session user_id to that of the user id just created
-  session[:user_id] = user_id[0]['id']
   redirect '/'
 end
 
 get '/users/:id' do
   result = run_sql("SELECT * FROM users WHERE id = $1",[params[:id]])
   user = result[0]
-
-  # db = PG.connect(dbname: 'trading_floor')
-  # sql = "SELECT * FROM users WHERE id = '#{params[:id]}';"
-  # user = db.exec(sql)[0]
-  # db.close
 
   erb :user_profile, locals: { user: user }
 end
@@ -121,10 +99,6 @@ delete '/users/:id' do
 
   run_sql("DELETE FROM users WHERE id = $1",[params[:id]])
 
-  # db = PG.connect(dbname: 'trading_floor')
-  # db.exec("DELETE FROM users WHERE id = #{params[:id]};")
-  # db.close
-
   session[:user_id] = nil
 
   redirect '/'
@@ -140,13 +114,27 @@ def get_btc_price
   return price
 end
 
-# def get_cash_balance(user_id)
+def record_trade(price, no_of_coins, trade_size)
+  run_sql("INSERT INTO trades (price, no_of_coins, trade_size, user_id) VALUES ($1, $2, $3, $4);", [price, no_of_coins, trade_size, session[:user_id]])
+end
 
-# end
+def get_cash_balance(user_id)
+  cash_balance = 10000 # starting balance
+  trades = run_sql("SELECT * FROM trades WHERE user_id = $1", [user_id])
+  trades.each do |trade|
+    cash_balance = cash_balance - trade['trade_size'].to_f
+  end
+  return cash_balance
+end
 
-# def purchase_exceeds_balance(cost)
-#   if cost >= cash_balance
-# end
+def get_bitcoin_balance(user_id)
+  bitcoin_balance = 0
+  trades = run_sql("SELECT * FROM trades WHERE user_id = $1", [user_id])
+  trades.each do |trade|
+    bitcoin_balance = bitcoin_balance + trade['no_of_coins'].to_f
+  end
+  return bitcoin_balance.round(8)
+end
 
 
 get '/' do
@@ -155,17 +143,20 @@ get '/' do
   bitcoin_balance = 0
 
   if logged_in?
-    trades = run_sql("SELECT * FROM trades WHERE user_id = $1", [session[:user_id]])
+    cash_balance = get_cash_balance(session[:user_id])
+    bitcoin_balance = get_bitcoin_balance(session[:user_id])
+
+    # trades = run_sql("SELECT * FROM trades WHERE user_id = $1", [session[:user_id]])
     # calculates balances each time. Would be a scaling issue. Will need to place the balances as a column in users table that updates after each trade, solving the need to traverse the whole trades table each time.
-    trades.each do |trade|
-      cash_balance = cash_balance + trade['trade_size'].to_f
-      bitcoin_balance = bitcoin_balance + trade['no_of_coins'].to_f
-    end
+    # trades.each do |trade|
+    #   cash_balance = cash_balance + trade['trade_size'].to_f
+    #   bitcoin_balance = bitcoin_balance + trade['no_of_coins'].to_f
+    # end
   end
 
-  combined_value = cash_balance + (bitcoin_balance * get_btc_price())
+  portfolio_value = cash_balance + (bitcoin_balance * get_btc_price())
 
-  erb :index, locals: { cash_balance: cash_balance, bitcoin_balance: bitcoin_balance, combined_value: combined_value }
+  erb :index, locals: { cash_balance: cash_balance, bitcoin_balance: bitcoin_balance, portfolio_value: portfolio_value }
 end
 
 
@@ -173,15 +164,21 @@ post '/trade' do
   redirect '/login' unless logged_in? # send to login if not logged in.
   
   price = get_btc_price()
+  trade_cost = 0
 
-  # convert the trade_cost to -ve if it's not a purchase.
+  # convert the trade_cost to -ve if it's not a purchase & check for overdraw
   if params[:purchase]
     trade_cost = params[:trade_amount].to_f.round(2)
-    # if purchase_exceeds_balance(trade_cost)
-    #   redirect '/'
-    # end
+    if get_cash_balance(session[:user_id]) < trade_cost
+      # trade can't exceed cash balance
+      redirect '/'
+    end
   else
     trade_cost = -(params[:trade_amount].to_f.round(2))   
+    if -(trade_cost / price) > get_bitcoin_balance(session[:user_id])
+      # if number of bitcoins required for the trade is > bitcoin balance
+      redirect '/'
+    end
   end
 
   no_of_bitcoins = (trade_cost / price).round(8)
@@ -195,11 +192,6 @@ get '/trade_history' do
   redirect '/login' unless logged_in? # send to login if not logged in.
 
   history = run_sql("SELECT * FROM trades WHERE user_id = $1",[session[:user_id]])
-
-  # db = PG.connect(dbname: 'trading_floor')
-  # sql = "SELECT * FROM trades WHERE user_id='#{session[:user_id]}';"
-  # history = db.exec(sql)
-  # db.close
 
   erb :trade_history, locals: { history: history }
 end
