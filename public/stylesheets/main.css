@@ -4,6 +4,10 @@
     width: 80%;
 } */
 
+* {
+    box-sizing: border-box;
+}
+
 .yield_div {
     margin: auto;
     width: 80%;
@@ -39,6 +43,25 @@ nav, .user_profile_options_div, .nav_form, .user_profile_options_div p{
     text-align: center;
     font-size: 300%;
     margin: 0;
+}
+
+.orders_and_leaderbard_section {
+    display: grid;
+    /* grid-template-columns: 3fr 1fr; */
+    grid-template-columns: 65% 35%;
+}
+ 
+.leader_board_div {
+    position: relative;
+    bottom: 40px;
+    height: 200px;
+    width: 250px;
+    border: 1px solid black;
+    border-radius: 15px;
+
+}
+.leader_board_div h3 {
+    text-align: center;
 }
 
 .chart_widget_div {

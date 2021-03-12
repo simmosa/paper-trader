@@ -136,6 +136,54 @@ def get_bitcoin_balance(user_id)
   return bitcoin_balance.round(8)
 end
 
+# def get_leaderbaord
+#   users_and_value = []
+#   leaders = []
+#   #get a list of the users
+#   users = run_sql("SELECT * FROM users")
+#   users.each do |user,index|
+#     cash_balance = get_cash_balance(user)
+#     bitcoin_balance = get_bitcoin_balance(user)
+#     portfolio_value = cash_balance + (bitcoin_balance * get_btc_price())
+
+#     users_and_value.push([ user['first_name'], portfolio_value ])
+#   end
+
+#   5.time do
+    
+#     users_and_value.
+#   end
+# end
+
+
+def get_leaderboard
+  portfolio_values = []
+  user_names = []
+  leaders = []
+  #get a list of the users
+  users = run_sql("SELECT * FROM users")
+  users.each do |user|
+    cash_balance = get_cash_balance(user['id'])
+    bitcoin_balance = get_bitcoin_balance(user['id'])
+    portfolio_value = cash_balance + (bitcoin_balance * get_btc_price())
+
+    portfolio_values.push(portfolio_value)
+    user_names.push(user['first_name'])
+  end
+
+  5.times do
+    index_of_max_val = portfolio_values.each_with_index.max[1]
+    max_val = portfolio_values[index_of_max_val]
+    user_name = user_names[index_of_max_val]
+    leaders.push([user_name, max_val])
+
+    portfolio_values.delete_at(index_of_max_val)
+    user_names.delete_at(index_of_max_val)
+  end
+
+  return leaders
+ 
+end
 
 get '/' do
   # get the balances to display for the session user or zero balance if not logged in
@@ -145,18 +193,15 @@ get '/' do
   if logged_in?
     cash_balance = get_cash_balance(session[:user_id])
     bitcoin_balance = get_bitcoin_balance(session[:user_id])
-
-    # trades = run_sql("SELECT * FROM trades WHERE user_id = $1", [session[:user_id]])
     # calculates balances each time. Would be a scaling issue. Will need to place the balances as a column in users table that updates after each trade, solving the need to traverse the whole trades table each time.
-    # trades.each do |trade|
-    #   cash_balance = cash_balance + trade['trade_size'].to_f
-    #   bitcoin_balance = bitcoin_balance + trade['no_of_coins'].to_f
-    # end
   end
 
   portfolio_value = cash_balance + (bitcoin_balance * get_btc_price())
 
-  erb :index, locals: { cash_balance: cash_balance, bitcoin_balance: bitcoin_balance, portfolio_value: portfolio_value }
+  # leaders is an array of the top 5 users and portfolio balance.
+  leaders = get_leaderboard()
+
+  erb :index, locals: { cash_balance: cash_balance, bitcoin_balance: bitcoin_balance, portfolio_value: portfolio_value, leaders: leaders }
 end
 
 
