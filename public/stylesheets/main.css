@@ -1,29 +1,17 @@
-
-/* .container_section {
-    margin: auto;
-    width: 80%;
-} */
-
 * {
     box-sizing: border-box;
 }
 
-.yield_div {
-    margin: auto;
-    width: 80%;
+/* ****************** Title and Nav ************** */
+.page_title_h1 {
+    text-align: center;
+    font-size: 300%;
+    margin: 0;
 }
 
 .menu_bar_section {
     border-bottom: 1px solid black;
 }
-/* nav {
-    border-bottom: 1px solid black;
-} */
-/*
-nav a, nav div, .nav_btn, .nav_form {
-    display: inline;
-} */
-
 
 nav, .user_profile_options_div, .nav_form, .user_profile_options_div p{
     display: inline;
@@ -39,36 +27,64 @@ nav, .user_profile_options_div, .nav_form, .user_profile_options_div p{
     bottom: 4px;
     
 }
-.page_title_h1 {
-    text-align: center;
-    font-size: 300%;
-    margin: 0;
+
+/* ******************* yield ******************* */
+.yield_div { 
+    margin: auto;
+    width: 100%;
+}
+
+/* ********************* Index ***************** */
+.index_whole_page_section {
+    position: relative;
+    left: -80px;
+    display: grid;
+    grid-template-columns: 80% 20%;
+    margin: auto;
+    width: 960px;
+}
+
+.index_main_div {
+    margin: auto;
+    width: 650px;
 }
 
 .orders_and_leaderbard_section {
     display: grid;
-    /* grid-template-columns: 3fr 1fr; */
     grid-template-columns: 65% 35%;
 }
  
 .leader_board_div {
     position: relative;
     bottom: 40px;
-    height: 200px;
+    height: 300px;
     width: 250px;
     border: 1px solid black;
     border-radius: 15px;
-
+    overflow: auto;
 }
 .leader_board_div h3 {
     text-align: center;
 }
 
 .chart_widget_div {
-    margin-top: 1%
+    margin: auto;
+    margin-top: 1%;
 }
-
 
 .blue-text {
     font-size: 90%
+}
+
+.index_chat_box_div {
+    height: 600px;
+    width: 300px;
+    border: 1px solid black;
+    margin: auto;
+    border-radius: 15px;
+    overflow: auto;
+}
+
+.index_chat_box_div h3 {
+    text-align: center;
 }

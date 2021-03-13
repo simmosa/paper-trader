@@ -1,71 +1,75 @@
-<h2>Trading Floor</h2>
 
-<section class="orders_and_leaderbard_section">
-    <div class="trading_div">
-        <div class="balance_div">
-            <p class="cash_balance_p"> <em>Cash Balance: </em> $ <%= "%.2f" % cash_balance.round(2) %></p>
-            <p class="bitcoin_balance_p"> <em>Bitcoin Balance: </em> BTC <%= "%.8f" % bitcoin_balance.round(8) %></p>
+<section class="index_whole_page_section">
+    <div class="index_main_div">
+        <h2>Trading Floor</h2>
+        <section class="orders_and_leaderbard_section">
+            <div class="trading_div">
+                <div class="balance_div">
+                    <p class="cash_balance_p"> <em>Cash Balance: </em> $ <%= "%.2f" % cash_balance.round(2) %></p>
+                    <p class="bitcoin_balance_p"> <em>Bitcoin Balance: </em> BTC <%= "%.8f" % bitcoin_balance.round(8) %></p>
 
-            <p class="portfolio_value_p"> <em>Portfolio Value: </em> $ <%= "%.2f" % portfolio_value.round(2) %></p>
-        </div>
+                    <p class="portfolio_value_p"> <em>Portfolio Value: </em> $ <%= "%.2f" % portfolio_value.round(2) %></p>
+                </div>
 
-        <div class="orders_div">
-            <% # hidden input "purchase" used to determine if purchase or sale %>
-            <form action="/trade" method="post">
-                <label for="" class="here" >purchase amount: </label>
-                <input type="text" name="trade_amount">
-                <input type="hidden" name="purchase"> 
-                <button>execute purchase</button>
-            </form>
+                <div class="orders_div">
+                    <% # hidden input "purchase" used to determine if purchase or sale %>
+                    <form action="/trade" method="post">
+                        <label for="" class="here" >purchase amount: </label>
+                        <input type="text" name="trade_amount">
+                        <input type="hidden" name="purchase"> 
+                        <button>execute purchase</button>
+                    </form>
 
-            <form action="/trade" method="post">
-                <label for="">sale amount: </label>
-                <input type="text" name="trade_amount">
-                <button>execute sale</button>
-            </form>
+                    <form action="/trade" method="post">
+                        <label for="">sale amount: </label>
+                        <input type="text" name="trade_amount">
+                        <button>execute sale</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="leader_board_div">
+                <h3>Leaderboard</h3>
+                <ol> 
+                    <% leaders.each do |leader| %>
+                        <li> 
+                        <%= leader[0] %>  - $ <%= "%.2f" % leader[1] %>
+                        </li>
+                    <%end%>     
+                </ol>
+            </div>
+        </section>
+
+        <div class="chart_widget_div">
+            <!-- TradingView Widget BEGIN -->
+            <div class="tradingview-widget-container">
+            <div id="tradingview_e93f4"></div>
+            <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/BTCAUD/?exchange=BINANCE" rel="noopener" target="_blank"><span class="blue-text">BTCAUD Chart</span></a> by TradingView</div>
+            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+            <script type="text/javascript">
+            new TradingView.widget(
+            {
+            "width": 600,
+            "height": 373,
+            "symbol": "BINANCE:BTCAUD",
+            "interval": "D",
+            "timezone": "Australia/Sydney",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "allow_symbol_change": true,
+            "container_id": "tradingview_e93f4"
+            }
+            );
+            </script>
+            </div>
+            <!-- TradingView Widget END -->
         </div>
     </div>
 
-    <div class="leader_board_div">
-        <h3>Leaderboard</h3>
-        <ol>
-   
-            <% leaders.each do |leader| %>
-                <li> 
-                  <%= leader[0] %>  - $ <%= "%.2f" % leader[1] %>
-                </li>
-            <%end%>     
-        </ol>
-
+    <div class="index_chat_box_div">
+        <h3>Chat box</h3>
     </div>
 </section>
-
-<div class="chart_widget_div">
-    <!-- TradingView Widget BEGIN -->
-    <div class="tradingview-widget-container">
-    <div id="tradingview_e93f4"></div>
-    <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/BTCAUD/?exchange=BINANCE" rel="noopener" target="_blank"><span class="blue-text">BTCAUD Chart</span></a> by TradingView</div>
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script type="text/javascript">
-    new TradingView.widget(
-    {
-    "width": 600,
-    "height": 373,
-    "symbol": "BINANCE:BTCAUD",
-    "interval": "D",
-    "timezone": "Australia/Sydney",
-    "theme": "dark",
-    "style": "1",
-    "locale": "en",
-    "toolbar_bg": "#f1f3f6",
-    "enable_publishing": false,
-    "allow_symbol_change": true,
-    "container_id": "tradingview_e93f4"
-    }
-    );
-    </script>
-    </div>
-    <!-- TradingView Widget END -->
-</div>
-
-

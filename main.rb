@@ -136,25 +136,6 @@ def get_bitcoin_balance(user_id)
   return bitcoin_balance.round(8)
 end
 
-# def get_leaderbaord
-#   users_and_value = []
-#   leaders = []
-#   #get a list of the users
-#   users = run_sql("SELECT * FROM users")
-#   users.each do |user,index|
-#     cash_balance = get_cash_balance(user)
-#     bitcoin_balance = get_bitcoin_balance(user)
-#     portfolio_value = cash_balance + (bitcoin_balance * get_btc_price())
-
-#     users_and_value.push([ user['first_name'], portfolio_value ])
-#   end
-
-#   5.time do
-    
-#     users_and_value.
-#   end
-# end
-
 
 def get_leaderboard
   portfolio_values = []
@@ -182,7 +163,6 @@ def get_leaderboard
   end
 
   return leaders
- 
 end
 
 get '/' do
