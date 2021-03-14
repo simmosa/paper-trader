@@ -2,7 +2,7 @@
     box-sizing: border-box;
 }
 
-/* ****************** Title and Nav ************** */
+/* ****************** Layout ************** */
 .page_title_h1 {
     text-align: center;
     font-size: 300%;
@@ -27,6 +27,15 @@ nav, .user_profile_options_div, .nav_form, .user_profile_options_div p{
     bottom: 4px;
     
 }
+
+a:link, a:visited {
+    text-decoration: none;
+    color: rgb(24, 24, 231);
+}
+a:hover {
+    text-decoration: underline;
+}
+  
 
 /* ******************* yield ******************* */
 .yield_div { 
@@ -73,18 +82,42 @@ nav, .user_profile_options_div, .nav_form, .user_profile_options_div p{
 }
 
 .blue-text {
-    font-size: 90%
+    font-size: 90%;
 }
 
-.index_chat_box_div {
+.chat_box_div {
     height: 600px;
     width: 300px;
     border: 1px solid black;
     margin: auto;
     border-radius: 15px;
+}
+
+.chat_box_div h3 {
+    text-align: center;
+}
+
+.dialog_div {
+    position: relative;
+    left: -5px;
+    bottom: 15px;
+    height: 500px;
+    width: 300px;
+    border-radius: 15px;
+    /* border: 1px solid black; */
     overflow: auto;
 }
 
-.index_chat_box_div h3 {
-    text-align: center;
+.chat_message_input {
+    position: relative;
+    bottom: 6px;
+    width: 100%;
+    height: 45px;
+    border-radius: 15px;
 }
+
+
+
+/* ******************* Trade History ******************* */
+
+

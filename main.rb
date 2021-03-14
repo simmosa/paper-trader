@@ -138,29 +138,54 @@ end
 
 
 def get_leaderboard
-  portfolio_values = []
-  user_names = []
+  gain_or_loss_values = [] # users and values are pushed
+  matched_users = [] # into these 2 arrays at the same time so the indexes match.
   leaders = []
   #get a list of the users
   users = run_sql("SELECT * FROM users")
   users.each do |user|
     cash_balance = get_cash_balance(user['id'])
     bitcoin_balance = get_bitcoin_balance(user['id'])
-    portfolio_value = cash_balance + (bitcoin_balance * get_btc_price())
+    gain_or_loss_value = (cash_balance - 10000) + (bitcoin_balance * get_btc_price())
 
-    portfolio_values.push(portfolio_value)
-    user_names.push(user['first_name'])
+    gain_or_loss_values.push(gain_or_loss_value)
+    matched_users.push(user)
   end
 
-  5.times do
-    index_of_max_val = portfolio_values.each_with_index.max[1]
-    max_val = portfolio_values[index_of_max_val]
-    user_name = user_names[index_of_max_val]
-    leaders.push([user_name, max_val])
+  while matched_users.length > 0 do
+    index_of_max_val = gain_or_loss_values.each_with_index.max[1]
+    gain_or_loss_value = gain_or_loss_values[index_of_max_val]
+    matched_user = matched_users[index_of_max_val]
+    leaders.push([matched_user, gain_or_loss_value])
 
-    portfolio_values.delete_at(index_of_max_val)
-    user_names.delete_at(index_of_max_val)
+    gain_or_loss_values.delete_at(index_of_max_val)
+    matched_users.delete_at(index_of_max_val)
   end
+
+
+  # portfolio_values = []
+  # user_names = []
+  # leaders = []
+  # #get a list of the users
+  # users = run_sql("SELECT * FROM users")
+  # users.each do |user|
+  #   cash_balance = get_cash_balance(user['id'])
+  #   bitcoin_balance = get_bitcoin_balance(user['id'])
+  #   portfolio_value = cash_balance + (bitcoin_balance * get_btc_price())
+
+  #   portfolio_values.push(portfolio_value)
+  #   user_names.push(user['first_name'])
+  # end
+
+  # 5.times do
+  #   index_of_max_val = portfolio_values.each_with_index.max[1]
+  #   max_val = portfolio_values[index_of_max_val]
+  #   user_name = user_names[index_of_max_val]
+  #   leaders.push([user_name, max_val])
+
+  #   portfolio_values.delete_at(index_of_max_val)
+  #   user_names.delete_at(index_of_max_val)
+  # end
 
   return leaders
 end
@@ -178,10 +203,11 @@ get '/' do
 
   portfolio_value = cash_balance + (bitcoin_balance * get_btc_price())
 
-  # leaders is an array of the top 5 users and portfolio balance.
   leaders = get_leaderboard()
 
-  erb :index, locals: { cash_balance: cash_balance, bitcoin_balance: bitcoin_balance, portfolio_value: portfolio_value, leaders: leaders }
+  chat_box_messages = get_messages()
+
+  erb :index, locals: { cash_balance: cash_balance, bitcoin_balance: bitcoin_balance, portfolio_value: portfolio_value, leaders: leaders, messages: chat_box_messages }
 end
 
 
@@ -213,14 +239,41 @@ post '/trade' do
 end
 
 
-get '/trade_history' do
+get '/trade_history/:id' do
   redirect '/login' unless logged_in? # send to login if not logged in.
 
-  history = run_sql("SELECT * FROM trades WHERE user_id = $1",[session[:user_id]])
+  history = run_sql("SELECT * FROM trades WHERE user_id = $1",[params[:id]])
 
-  erb :trade_history, locals: { history: history }
+  names = run_sql("SELECT first_name, last_name FROM users WHERE id = $1", [params[:id]])
+
+  username = "#{names[0]['first_name']} #{names[0]['last_name']}"
+
+  erb :trade_history, locals: { history: history, username: username }
 end
 
+##################     messages     ######################
+##################                  ######################
 
+
+# def get_username_by_id(id)
+#   result = run_sql("SELECT first_name FROM users Where id = $1",[id])
+#   first_name = result[0]['first_names']
+# binding.pry
+#   return first_name
+# end
+
+def get_messages
+  messages = run_sql("SELECT * FROM messages")
+
+  return messages
+end
+
+post '/messages' do
+  redirect '/login' unless logged_in? # send to login if not logged in.
+
+  run_sql("INSERT INTO messages (chat, user_id) VALUES ($1, $2);", [params[:message], session[:user_id]])
+
+  redirect '/'
+end
 
 

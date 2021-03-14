@@ -33,7 +33,8 @@
                 <ol> 
                     <% leaders.each do |leader| %>
                         <li> 
-                        <%= leader[0] %>  - $ <%= "%.2f" % leader[1] %>
+                            <a href="/trade_history/<%=leader[0]['id']%>"><%= leader[0]['first_name'] %></a>
+                          - $ <%= "%.2f" % leader[1] %>
                         </li>
                     <%end%>     
                 </ol>
@@ -69,7 +70,18 @@
         </div>
     </div>
 
-    <div class="index_chat_box_div">
+    <div class="chat_box_div">
         <h3>Chat box</h3>
+        <div class="dialog_div">
+            <ul>
+                <%messages.each do |message|%>                   
+                    <li><%=message['chat']%></li>
+                <%end%>
+            </ul>
+        </div>
+        <form action="/messages" method="post" class="chat_message_form">
+            <input type="text" name="message" class="chat_message_input">
+            <%# <textarea name="comment" form="chat_form" class="chat_message_input"></textarea> %>
+        </form>
     </div>
 </section>
