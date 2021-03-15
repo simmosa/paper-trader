@@ -15,14 +15,14 @@
                     <% # hidden input "purchase" used to determine if purchase or sale %>
                     <form action="/trade" method="post">
                         <label for="" class="here" >purchase amount: </label>
-                        <input type="text" name="trade_amount">
+                        <input type="text" name="trade_amount" class="orders_div_form_input">
                         <input type="hidden" name="purchase"> 
                         <button>execute purchase</button>
                     </form>
 
                     <form action="/trade" method="post">
                         <label for="">sale amount: </label>
-                        <input type="text" name="trade_amount">
+                        <input type="text" name="trade_amount" class="orders_div_form_input">
                         <button>execute sale</button>
                     </form>
                 </div>
@@ -32,9 +32,14 @@
                 <h3>Leaderboard</h3>
                 <ol> 
                     <% leaders.each do |leader| %>
-                        <li> 
+                        <li class="leaderboard_user_details_li"> 
                             <a href="/trade_history/<%=leader[0]['id']%>"><%= leader[0]['first_name'] %></a>
-                          - $ <%= "%.2f" % leader[1] %>
+                           <span 
+                            <% if leader[1] >= 0%>
+                                class="positive_value_span"><%="$ " "%.2f" % leader[1] %>
+                            <%else%>
+                                class="negative_value_span"><%="$ " "%.2f" % leader[1] %>
+                            <%end%></span>
                         </li>
                     <%end%>     
                 </ol>
@@ -73,8 +78,16 @@
     <div class="chat_box_div">
         <h3>Chat box</h3>
         <div class="dialog_div">
-            <ul>
-                <%messages.each do |message|%>                   
+            <ul class="dialog_ul">
+                <%messages.each_with_index do |message, index|%> 
+                    <%if index == 0 || message['user_id'] != messages[index - 1]['user_id']%>
+                        <p class="chat_username_p">
+                        <%if message['user_id'] == session['user_id']%>
+                            <span class="session_user_span"><%=get_username_by_id(message['user_id'])%> </span></p>
+                        <%else%>
+                            <%=get_username_by_id(message['user_id'])%></p>
+                        <%end%>
+                    <%end%>            
                     <li><%=message['chat']%></li>
                 <%end%>
             </ul>
@@ -85,3 +98,8 @@
         </form>
     </div>
 </section>
+
+<script>
+    var dialog_div = document.querySelector(".dialog_div");
+    dialog_div.scrollTop = dialog_div.scrollHeight;
+</script>

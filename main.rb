@@ -255,12 +255,12 @@ end
 ##################                  ######################
 
 
-# def get_username_by_id(id)
-#   result = run_sql("SELECT first_name FROM users Where id = $1",[id])
-#   first_name = result[0]['first_names']
-# binding.pry
-#   return first_name
-# end
+def get_username_by_id(id)
+  result = run_sql("SELECT first_name FROM users Where id = $1",[id])
+  first_name = result[0]['first_name']
+
+  return first_name
+end
 
 def get_messages
   messages = run_sql("SELECT * FROM messages")
