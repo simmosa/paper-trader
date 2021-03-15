@@ -15,14 +15,14 @@
                     <% # hidden input "purchase" used to determine if purchase or sale %>
                     <form action="/trade" method="post">
                         <label for="" class="here" >purchase amount: </label>
-                        <input type="text" name="trade_amount" class="orders_div_form_input">
+                        <input type="text" name="trade_amount" placeholder="enter dollar amount" class="orders_div_form_input">
                         <input type="hidden" name="purchase"> 
                         <button>execute purchase</button>
                     </form>
 
                     <form action="/trade" method="post">
                         <label for="">sale amount: </label>
-                        <input type="text" name="trade_amount" class="orders_div_form_input">
+                        <input type="text" name="trade_amount" placeholder="enter dollar amount"class="orders_div_form_input">
                         <button>execute sale</button>
                     </form>
                 </div>
