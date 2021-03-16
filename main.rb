@@ -212,28 +212,50 @@ end
 
 
 post '/trade' do
+
+  ## note: need to refine the consistency. ie. Sometimes checking for overdraft then redirecting, sometimes the opposite.
+  ## sometimes executing trade then redirect, sometimes, cascding to end of method to exec the trade.
   redirect '/login' unless logged_in? # send to login if not logged in.
   
   price = get_btc_price()
-  trade_cost = 0
+  trade_cost_cash = params[:cash_amount].to_f.round(2)
+  trade_cost_bitcoin = params[:bitcoin_amount].to_f.round(8)
 
+  if (trade_cost_cash > 0 && trade_cost_bitcoin > 0)
+    redirect '/'
+  end
+  
   # convert the trade_cost to -ve if it's not a purchase & check for overdraw
   if params[:purchase]
-    trade_cost = params[:trade_amount].to_f.round(2)
-    if get_cash_balance(session[:user_id]) < trade_cost
-      # trade can't exceed cash balance
+    if trade_cost_cash > 0
+      # trade_cost = params[:cash_amount].to_f.round(2)
+      if get_cash_balance(session[:user_id]) < trade_cost_cash
+        # trade can't exceed cash balance
+        redirect '/'
+      end
+    else # params for nothing for cash amount but something for btc amount
+      if (get_cash_balance(session[:user_id]) >= price * trade_cost_bitcoin )
+        record_trade(price, trade_cost_bitcoin, trade_cost_bitcoin * price )
+      end
       redirect '/'
     end
   else
-    trade_cost = -(params[:trade_amount].to_f.round(2))   
-    if -(trade_cost / price) > get_bitcoin_balance(session[:user_id])
-      # if number of bitcoins required for the trade is > bitcoin balance
+    if trade_cost_cash > 0
+      if ( get_bitcoin_balance(session[:user_id]) < trade_cost_cash / price )
+        # if number of bitcoins required for the trade is > bitcoin balance
+        redirect '/'
+      end
+      trade_cost_cash = -trade_cost_cash # setting value to -ve for record sale
+    else
+      if (trade_cost_bitcoin <= get_bitcoin_balance(session[:user_id]))
+        record_trade(price, -trade_cost_bitcoin, -trade_cost_bitcoin * price)
+      end
       redirect '/'
     end
   end
 
-  no_of_bitcoins = (trade_cost / price).round(8)
-  record_trade(price, no_of_bitcoins, trade_cost)
+  no_of_bitcoins = (trade_cost_cash / price).round(8)
+  record_trade(price, no_of_bitcoins, trade_cost_cash)
   
   redirect '/'
 end
