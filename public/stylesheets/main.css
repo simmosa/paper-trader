@@ -61,18 +61,80 @@ a:hover {
 .orders_and_leaderbard_section {
     display: grid;
     grid-template-columns: 65% 35%;
+    /* border: 1px solid black; */
+}
+.orders_div {
+    border: 1px solid black;
+    height: 170px;
+    width: 95%;
+    border-radius: 15px;;
 }
 
-.orders_div form{
+.trade_details_div form {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+.display_none {
+    display: none;
+}
+
+.order_options_div {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    text-align: center;
+
+}
+.purchase_div {
+    border-top-left-radius: 15px;
+}
+.purchase_div:hover, .sell_div:hover {
+    background-color: #ddd;
+  }
+
+.sell_div {
+    border-top-right-radius: 15px;
+}
+
+.trade_input_div {
+    position: relative;
+    top: 25px;
+    display: grid;
+    grid-template-columns: 48% 4% 48%;
+}
+.trade_input_div input, .or_span{
+    margin: auto;
+    height: 120%;
+}
+
+.or_span {
+    font-size: 20px;
+}
+
+.trade_form button{
+    position: relative;
+    width: 50%;
+    height: 30px;
+    margin: 40px 20px 23px 100px;
+}
+
+.background_grey_color {
+    background-color: rgb(204, 204, 204);
+}
+.white_background_color {
+    background-color: white;
+}
+
+/* .orders_div form{
     display: grid;
     grid-template-columns: 30% 70%;
     margin-top: 10px;
+    border: 1px solid black;
 }
 
 .orders_div_form_input {
     width: 60%;
-}
- 
+} */
+
 .leader_board_div {
     position: relative;
     bottom: 40px;

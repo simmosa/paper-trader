@@ -12,19 +12,32 @@
                 </div>
 
                 <div class="orders_div">
-                    <% # hidden input "purchase" used to determine if purchase or sale %>
-                    <form action="/trade" method="post">
-                        <label for="" class="here" >purchase amount: </label>
-                        <input type="text" name="trade_amount" placeholder="enter dollar amount" class="orders_div_form_input">
-                        <input type="hidden" name="purchase"> 
-                        <button>execute purchase</button>
-                    </form>
+                    <div class="order_options_div">
+                        <div class="purchase_div background_grey_color"><p class="purchase_p">Buy Bitcoin</p></div>
+                        <div class="sell_div" ><p class="sell_p">Sell Bitcoin</p></div>
+                    </div>
+                    <div class="trade_details_div">
+                        <% # hidden input "purchase" used to determine if purchase or sale %>
+                        <form action="/trade" method="post" class="trade_form buy_form background_grey_color">
+                            <%#<label for="" class="here" >purchase amount: </label>%>
+                            <div class="trade_input_div">
+                                <input type="text" name="cash_amount" placeholder="enter dollar amount" class="orders_div_form_input" class="buy_cash_amount_input">
+                                <span class="or_span">or</span>
+                                <input type="text" name="bitcoin_amount" placeholder="enter bitcoin amount" class="orders_div_form_input" class="buy_bitcoin_amount_input">
+                                <input type="hidden" name="purchase"> 
+                            </div>
+                            <button>execute purchase</button>
+                        </form>
 
-                    <form action="/trade" method="post">
-                        <label for="">sale amount: </label>
-                        <input type="text" name="trade_amount" placeholder="enter dollar amount"class="orders_div_form_input">
-                        <button>execute sale</button>
-                    </form>
+                        <form action="/trade" method="post" class="trade_form sell_form background_grey_color display_none">
+                            <div class="trade_input_div">
+                                <input type="text" name="cash_amount" placeholder="enter dollar amount" class="orders_div_form_input">
+                                <span class="or_span">or</span>
+                                <input type="text" name="bitcoin_amount" placeholder="enter bitcoin amount" class="orders_div_form_input" class="sell_bitcoin_amount_input"> 
+                            </div>
+                            <button>execute sale</button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -100,6 +113,33 @@
 </section>
 
 <script>
+    // setting the chat box to always display the bottom of the chat first. ie. Most current chat.
     var dialog_div = document.querySelector(".dialog_div");
     dialog_div.scrollTop = dialog_div.scrollHeight;
+
+    const purchaseDiv = document.querySelector('.purchase_div');
+    const sellDiv = document.querySelector('.sell_div');
+
+    const buyForm = document.querySelector('.buy_form');
+    const sellForm = document.querySelector('.sell_form')
+
+    function purchaseDivFront() {
+        purchaseDiv.classList.add('background_grey_color');
+        sellDiv.classList.remove('background_grey_color');
+
+        buyForm.classList.remove('display_none');
+        sellForm.classList.add('display_none');
+    }
+
+    function sellDivFront() {
+        sellDiv.classList.add('background_grey_color')
+        purchaseDiv.classList.remove('background_grey_color');
+
+        sellForm.classList.remove('display_none');
+        buyForm.classList.add('display_none');
+    }
+
+    purchaseDiv.addEventListener('click',purchaseDivFront);
+    sellDiv.addEventListener('click',sellDivFront);
+
 </script>

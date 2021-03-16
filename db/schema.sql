@@ -29,5 +29,9 @@ CREATE TABLE users (
 
 INSERT INTO users (first_name, last_name, email, password_digest) VALUES ('Simo', 'Raj', 'simo@simo.co','pancake');
 
-INSERT INTO users (email, password) VALUES ('simo@simo.co', 'pancake');
-INSERT INTO users (email, password) VALUES ('simo2@simo.co', 'pancake2');
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    chat TEXT,
+    user_id INTEGER
+);
+
